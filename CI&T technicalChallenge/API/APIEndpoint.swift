@@ -13,7 +13,7 @@ enum HTTPMethod: String {
     case patch = "PATCH"
 }
 
-enum APIEnum {
+enum APIEndpoint{
     case getPokemons(generation: Int)
     case getPokemon(id: String)
     
