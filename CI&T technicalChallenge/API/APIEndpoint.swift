@@ -14,30 +14,33 @@ enum HTTPMethod: String {
 }
 
 enum APIEndpoint{
-    case getPokemons(generation: Int)
-    case getPokemon(id: String)
+    case getPokemonsFromGeneration(generation: Int)
+    case getPokemonFromID(id: Int)
+    case getPokemonFromName(name: String)
     
     static var baseUrl = "https://pokeapi.co/api/v2/"
     
     var path: String {
         switch self {
-            case .getPokemons(generation: let generation):
+            case .getPokemonsFromGeneration(generation: let generation):
             return "pokemon?limit=100&offset=\(generation * 100)"
-        case .getPokemon(id: let id):
+        case .getPokemonFromID(id: let id):
             return "pokemon/\(id)"
+        case .getPokemonFromName(name: let name):
+            return "pokemon/\(name)"
         }
     }
     
     var httpMethod: HTTPMethod {
         switch self {
-        case .getPokemons, .getPokemon:
+        case .getPokemonFromName, .getPokemonFromID, .getPokemonsFromGeneration:
             return .get
         }
     }
     
     var header: [String: String] {
         switch self {
-            case .getPokemons, .getPokemon:
+        case .getPokemonFromName, .getPokemonFromID, .getPokemonsFromGeneration:
             return ["Content-Type": "apllication/json"]
         }
     }
