@@ -10,6 +10,7 @@ struct URLSessionClient: ClientProtocol {
         guard let url = URL(string: endPoint.path) else {
             throw NetworkError.invalidURL
         }
+        
         var request = URLRequest(url: url)
         request.httpMethod = endPoint.httpMethod.rawValue
         endPoint.header.forEach { key, value in

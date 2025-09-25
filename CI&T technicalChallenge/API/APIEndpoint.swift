@@ -18,16 +18,18 @@ enum APIEndpoint{
     case getPokemonFromID(id: Int)
     case getPokemonFromName(name: String)
     
-    static var baseUrl = "https://pokeapi.co/api/v2/"
+    var baseUrl: String {
+      return "https://pokeapi.co/api/v2/"
+    }
     
     var path: String {
         switch self {
             case .getPokemonsFromGeneration(generation: let generation):
-            return "pokemon?limit=100&offset=\(generation * 100)"
+            return baseUrl + "generation/\(generation)/"
         case .getPokemonFromID(id: let id):
-            return "pokemon/\(id)"
+            return baseUrl + "pokemon/\(id)"
         case .getPokemonFromName(name: let name):
-            return "pokemon/\(name)"
+            return baseUrl + "pokemon/\(name)"
         }
     }
     
