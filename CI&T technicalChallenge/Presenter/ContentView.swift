@@ -13,34 +13,37 @@ struct ContentView: View {
         NavigationStack {
             VStack {
                 content
+
             }
             .onAppear {
+                if viewModel.pokemonTotals == nil {
+                    viewModel.loadPokemons()
+                }
+            }
+            .refreshable {
                 viewModel.loadPokemons()
             }
         }
     }
-    
+
     @ViewBuilder
     var content: some View {
         if viewModel.isLoadingPokemons {
             ProgressView()
         }
         else {
-            List (viewModel.pokemons) { pokemon in
+            List (viewModel.pokemons, id: \.self.name) { pokemon in
                 NavigationLink{
-                    PokemonDetailsView(name: pokemon.name, image: pokemon.image, types: pokemon.types, weight: pokemon.weight)
+                    PokemonDetailsView(name: pokemon.name ?? "", image: pokemon.image, types: pokemon.types, weight: pokemon.weight ?? 0)
                 } label: {
                     HStack {
-                        Image(uiImage: pokemon.image ?? UIImage())
-                            .resizable()
-                            .scaledToFill()
+                        getPokeImage(image: pokemon.image)
                             .frame(width: 60, height: 60)
-                        Text(pokemon.name)
-                        Spacer()
-                        Image(systemName: "chevron.right")
+                        Text(pokemon.name ?? "")
                     }
                 }
             }
+
 
             HStack {
                 if viewModel.canGoBackward {
@@ -57,6 +60,16 @@ struct ContentView: View {
                 }
             }
             .padding(.horizontal, 16)
+        }
+    }
+    @ViewBuilder
+    func getPokeImage(image: UIImage?) -> some View {
+        if let image = image {
+             Image(uiImage: image)
+                .resizable()
+                .scaledToFill()
+        } else {
+             ProgressView()
         }
     }
 }

@@ -22,34 +22,55 @@ final class ContentViewModel {
 
     @ObservationIgnored var pokemonTotals: PokeListResponseDTO?
     @ObservationIgnored let pokeService: PokeService = PokeService()
-    
+    @ObservationIgnored private var loadPokemonsTask: Task<Void, Never>?
     func loadPokemons(offset: Int = 0) {
+        loadPokemonsTask?.cancel()
         isLoadingPokemons = true
-        Task {
-            await fetchPokemons(from: offset)
+
+        loadPokemonsTask = Task {
+            let auxPokemon = await fetchPokemons(from: offset)
+
+            await MainActor.run {
+                pokemons = auxPokemon
+                isLoadingPokemons = false
+            }
+
             await setPokemons()
         }
     }
 
-    private func getPokemon(pokemons: [PokeResults]) async -> [PokemonModel] {
-        var auxPokemons: [PokemonModel] = []
-        for pokemon in pokemons {
-            guard let response = await getPokemonDetails(pokemon: pokemon) else { return []}
-            auxPokemons.append(response)
-        }
-        return auxPokemons
-    }
-
-    private func fetchPokemons(from offset: Int) async {
-        isLoadingPokemons = true
+    private func fetchPokemons(from offset: Int) async -> [PokemonModel] {
         do {
+            var auxPokemon: [PokemonModel] = []
             pokemonTotals = try await pokeService.getPokemons(offset: offset)
+
+            guard let results = pokemonTotals?.results else { return  []}
+            results.forEach { pokeResult in
+                print(pokeResult.name)
+                auxPokemon.append(PokemonModel(pokeResult: pokeResult))
+            }
+
+            return auxPokemon
+
         } catch let error as NetworkError {
             print(error)
+            return []
         } catch let error {
-            print("n sei")
+            print(error)
+            return []
         }
     }
+
+    private func setPokemons() async {
+        for (index, pokemon) in pokemons.enumerated() {
+            guard let pokemonDetails = await getPokemonDetails(pokemon: pokemon) else { return }
+
+            await MainActor.run {
+                pokemons[index] = .init(pokemonResponse: pokemonDetails)
+            }
+        }
+    }
+
 
     func pageForward() {
         guard let pokemonTotals = pokemonTotals else { return }
@@ -63,19 +84,11 @@ final class ContentViewModel {
         loadPokemons(offset: offset)
     }
 
-    private func setPokemons() async {
-        guard let results = pokemonTotals?.results else { return }
-        let pokemonAnswer = await getPokemon(pokemons: results)
-        await MainActor.run {
-            self.pokemons = pokemonAnswer
-            self.isLoadingPokemons = false
-        }
-    }
-
-    private func getPokemonDetails(pokemon: PokeResults) async -> PokemonModel? {
+    private func getPokemonDetails(pokemon: PokemonModel) async -> PokeResponseDTO? {
         do {
-            let pokemonResponse = try await pokeService.getPokemon(name: pokemon.name)
-            return PokemonModel(pokemonResponse: pokemonResponse)
+            guard let pokemonName = pokemon.name else {return nil}
+            let pokemonResponse = try await pokeService.getPokemon(name: pokemonName)
+            return pokemonResponse
         } catch let networkError as NetworkError {
             print(networkError.localizedDescription)
             return nil

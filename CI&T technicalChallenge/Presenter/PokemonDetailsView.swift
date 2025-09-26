@@ -9,9 +9,8 @@ struct PokemonDetailsView: View {
 
     var body: some View {
         VStack {
-            pokemonIMage
-                .resizable()
-                .scaledToFill()
+            pokemonImage
+
                 .frame(width: 150, height: 150)
             Text("Types:")
                 .font(.title)
@@ -24,13 +23,18 @@ struct PokemonDetailsView: View {
         .navigationBarTitleDisplayMode(.large)
         .navigationTitle(name)
     }
-    
-    var pokemonIMage: Image {
+
+    @ViewBuilder
+    var pokemonImage: some View {
         if let image {
             Image(uiImage: image)
+                .resizable()
+                .scaledToFill()
         }
         else {
             Image(systemName: "photo.fill")
+                .resizable()
+                .scaledToFill()
         }
     }
 }

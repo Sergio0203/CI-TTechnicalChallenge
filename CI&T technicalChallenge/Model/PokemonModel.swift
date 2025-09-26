@@ -9,9 +9,9 @@ import UIKit
 
 struct PokemonModel: Identifiable{
 
-    var id: Int
-    var name: String
-    var weight: Int
+    var id: Int?
+    var name: String?
+    var weight: Int?
     var image: UIImage?
     var types: [PokeTypeName] = []
 
@@ -35,6 +35,10 @@ struct PokemonModel: Identifiable{
         image = getUIImagefromUrl(imageUrl: pokemonResponse.sprites.front_default)
     }
 
+    init(pokeResult: PokeResults) {
+        name = pokeResult.name.capitalized
+    }
+    
     private func getUIImagefromUrl(imageUrl: String) -> UIImage? {
         guard let url = URL(string: imageUrl) else {
             return UIImage()
