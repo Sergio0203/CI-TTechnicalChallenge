@@ -7,21 +7,17 @@
 
 struct PokeService {
     var client: ClientProtocol
-    
+    let pokeEndPoint = PokeAPIEndpoint.self
     init (client: ClientProtocol = URLSessionClient()) {
         self.client = client
     }
     
-    func getPokeList(from generation: Int) async throws ->  PokeListResponseDTO {
-        try await client.request(.getPokemonsFromGeneration(generation: generation))
-    }
-    
-    func getPokemon(id: Int) async throws -> PokeResponseDTO {
-        try await client.request(.getPokemonFromID(id: id))
+    func getPokemons() async throws -> PokeListResponseDTO {
+        try await client.request(pokeEndPoint.getPokemon)
     }
     
     func getPokemon(name: String) async throws -> PokeResponseDTO {
-        try await client.request(.getPokemonFromName(name: name))
+        try await client.request(pokeEndPoint.getPokemonFromName(name: name))
     }
     
 }

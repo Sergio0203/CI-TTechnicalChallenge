@@ -6,9 +6,9 @@
 //
 
 struct PokeListResponseDTO: Decodable {
-    var pokemon_species: [PokemonSpecie]
+    var results: [PokeResults]
 }
 
-struct PokemonSpecie: Decodable {
+struct PokeResults: Decodable {
     var name: String
 }

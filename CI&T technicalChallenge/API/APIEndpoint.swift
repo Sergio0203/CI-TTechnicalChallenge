@@ -5,6 +5,7 @@
 //  Created by Sérgio César Lira Júnior on 24/09/25.
 //
 
+import Foundation
 enum HTTPMethod: String {
     case get = "GET"
     case post = "POST"
@@ -13,37 +14,38 @@ enum HTTPMethod: String {
     case patch = "PATCH"
 }
 
-enum APIEndpoint{
-    case getPokemonsFromGeneration(generation: Int)
-    case getPokemonFromID(id: Int)
+enum PokeAPIEndpoint: APIEndpointProtocol {
+
     case getPokemonFromName(name: String)
-    
-    var baseUrl: String {
-      return "https://pokeapi.co/api/v2/"
+    case getPokemon
+
+    var baseUrl: URL {
+        URL(string: "https://pokeapi.co/api/v2/")!
     }
-    
     var path: String {
         switch self {
-            case .getPokemonsFromGeneration(generation: let generation):
-            return baseUrl + "generation/\(generation)/"
-        case .getPokemonFromID(id: let id):
-            return baseUrl + "pokemon/\(id)"
+        case .getPokemon:
+            return "pokemon"
         case .getPokemonFromName(name: let name):
-            return baseUrl + "pokemon/\(name)"
+            return "pokemon/\(name)"
         }
     }
     
-    var httpMethod: HTTPMethod {
+    var method: HTTPMethod {
         switch self {
-        case .getPokemonFromName, .getPokemonFromID, .getPokemonsFromGeneration:
+        case .getPokemonFromName, .getPokemon:
             return .get
         }
     }
     
-    var header: [String: String] {
+    var headers: [String: String] {
         switch self {
-        case .getPokemonFromName, .getPokemonFromID, .getPokemonsFromGeneration:
+        case .getPokemonFromName, .getPokemon:
             return ["Content-Type": "apllication/json"]
         }
+    }
+
+    var parameters: [String : Any] {
+        ["":""]
     }
 }

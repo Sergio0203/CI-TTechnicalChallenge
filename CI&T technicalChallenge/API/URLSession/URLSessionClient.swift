@@ -6,14 +6,14 @@
 //
 import Foundation
 struct URLSessionClient: ClientProtocol {
-    func request<T>(_ endPoint: APIEndpoint) async throws -> T where T : Decodable {
-        guard let url = URL(string: endPoint.path) else {
-            throw NetworkError.invalidURL
-        }
-        
+    func request<T>(_ endPoint: APIEndpointProtocol) async throws -> T where T : Decodable {
+
+        var url = endPoint.baseUrl
+        url.append(component: endPoint.path)
         var request = URLRequest(url: url)
-        request.httpMethod = endPoint.httpMethod.rawValue
-        endPoint.header.forEach { key, value in
+        request.httpMethod = endPoint.method.rawValue
+
+        endPoint.headers.forEach { key, value in
             request.addValue(value, forHTTPHeaderField: key)
         }
         
