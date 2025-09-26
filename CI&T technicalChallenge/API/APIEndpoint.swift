@@ -17,14 +17,15 @@ enum HTTPMethod: String {
 enum PokeAPIEndpoint: APIEndpointProtocol {
 
     case getPokemonFromName(name: String)
-    case getPokemon
+    case getPokemons(offset: Int)
 
     var baseUrl: URL {
         URL(string: "https://pokeapi.co/api/v2/")!
     }
+
     var path: String {
         switch self {
-        case .getPokemon:
+        case .getPokemons:
             return "pokemon"
         case .getPokemonFromName(name: let name):
             return "pokemon/\(name)"
@@ -33,19 +34,28 @@ enum PokeAPIEndpoint: APIEndpointProtocol {
     
     var method: HTTPMethod {
         switch self {
-        case .getPokemonFromName, .getPokemon:
+        case .getPokemonFromName, .getPokemons:
             return .get
         }
     }
     
     var headers: [String: String] {
         switch self {
-        case .getPokemonFromName, .getPokemon:
-            return ["Content-Type": "apllication/json"]
+        case .getPokemonFromName, .getPokemons:
+            return ["Content-Type": "apllication/json", "Accept": "apllication/json"]
         }
     }
 
     var parameters: [String : Any] {
-        ["":""]
+        [:]
+    }
+
+    var query: [String : Int] {
+        switch self {
+        case .getPokemons(offset: let offset):
+            return ["limit": 10, "offset": offset]
+        case .getPokemonFromName:
+            return [:]
+        }
     }
 }

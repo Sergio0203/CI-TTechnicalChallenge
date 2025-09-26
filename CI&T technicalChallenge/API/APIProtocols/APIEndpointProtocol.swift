@@ -12,6 +12,7 @@ protocol APIEndpointProtocol {
     var method: HTTPMethod { get }
     var headers: [String: String] { get }
     var parameters: [String: Any] { get }
+    var query: [String: Int] { get }
 }
 
 

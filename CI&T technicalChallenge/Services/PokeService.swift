@@ -12,12 +12,11 @@ struct PokeService {
         self.client = client
     }
     
-    func getPokemons() async throws -> PokeListResponseDTO {
-        try await client.request(pokeEndPoint.getPokemon)
+    func getPokemons(offset: Int) async throws -> PokeListResponseDTO {
+        try await client.request(pokeEndPoint.getPokemons(offset: offset))
     }
     
     func getPokemon(name: String) async throws -> PokeResponseDTO {
         try await client.request(pokeEndPoint.getPokemonFromName(name: name))
     }
-    
 }

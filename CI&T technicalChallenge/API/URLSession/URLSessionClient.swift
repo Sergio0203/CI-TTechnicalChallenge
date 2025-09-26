@@ -10,9 +10,12 @@ struct URLSessionClient: ClientProtocol {
 
         var url = endPoint.baseUrl
         url.append(component: endPoint.path)
+        endPoint.query.forEach { key, value in
+            url.append(queryItems: [.init(name: key, value: String(value))])
+        }
+
         var request = URLRequest(url: url)
         request.httpMethod = endPoint.method.rawValue
-
         endPoint.headers.forEach { key, value in
             request.addValue(value, forHTTPHeaderField: key)
         }
