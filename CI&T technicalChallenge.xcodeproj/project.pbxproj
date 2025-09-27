@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		EB051D7C2E889BC7005CECB7 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = EB051D7B2E889BB8005CECB7 /* README.md */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		EB051C742E84A2AE005CECB7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -27,6 +31,7 @@
 		EB051C662E84A2AC005CECB7 /* CI&T technicalChallenge.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CI&T technicalChallenge.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB051C732E84A2AE005CECB7 /* CI&T technicalChallengeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "CI&T technicalChallengeTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB051C7D2E84A2AE005CECB7 /* CI&T technicalChallengeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "CI&T technicalChallengeUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		EB051D7B2E889BB8005CECB7 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -75,6 +80,7 @@
 		EB051C5D2E84A2AC005CECB7 = {
 			isa = PBXGroup;
 			children = (
+				EB051D7B2E889BB8005CECB7 /* README.md */,
 				EB051C682E84A2AC005CECB7 /* CI&T technicalChallenge */,
 				EB051C762E84A2AE005CECB7 /* CI&T technicalChallengeTests */,
 				EB051C802E84A2AE005CECB7 /* CI&T technicalChallengeUITests */,
@@ -214,6 +220,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EB051D7C2E889BC7005CECB7 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
