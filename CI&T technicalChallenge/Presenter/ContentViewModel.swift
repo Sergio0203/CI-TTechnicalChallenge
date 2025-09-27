@@ -57,10 +57,12 @@ final class ContentViewModel {
 
             return auxPokemon
 
-        } catch is NetworkError{
+        } catch let error {
+            guard error.localizedDescription != "cancelled" else {
+                await cancelledError()
+                return []
+            }
             await setErrorAppearedtoTrue()
-            return []
-        } catch {
             return []
         }
     }
@@ -68,13 +70,11 @@ final class ContentViewModel {
     private func setPokemons() async {
         for (index, pokemon) in pokemons.enumerated() {
             guard let pokemonDetails = await getPokemonDetails(pokemon: pokemon) else { return }
-            let asyncPokemon = await PokemonModel(pokemonResponse: pokemonDetails)
             await MainActor.run {
-                pokemons[index] = asyncPokemon
+                pokemons[index] = PokemonModel(pokemonResponse: pokemonDetails)
             }
         }
     }
-
 
     func pageForward() {
         guard let pokemonTotals = pokemonTotals else { return }
@@ -93,17 +93,23 @@ final class ContentViewModel {
             guard let pokemonName = pokemon.name else {return nil}
             let pokemonResponse = try await pokeService.getPokemon(name: pokemonName)
             return pokemonResponse
-        } catch is NetworkError {
+        } catch let error {
+            guard error.localizedDescription != "cancelled" else {
+                await cancelledError()
+                return nil
+            }
             await setErrorAppearedtoTrue()
-            return nil
-        } catch {
             return nil
         }
     }
 
-    private func setErrorAppearedtoTrue() async {
-        await MainActor.run {
-            errorAppeared = true
-        }
+    @MainActor
+    private func setErrorAppearedtoTrue() {
+        errorAppeared = true
+    }
+
+    @MainActor
+    private func cancelledError() {
+        pokemons = []
     }
 }

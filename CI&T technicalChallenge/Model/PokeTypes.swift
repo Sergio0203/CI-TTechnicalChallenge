@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-enum PokeTypeName: String, Codable{
+enum PokeTypeName: String, Codable, Equatable {
     case bug = "bug"
     case normal = "normal"
     case fire = "fire"

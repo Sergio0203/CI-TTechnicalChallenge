@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State var viewModel = ContentViewModel()
+    @State var viewModel = ContentViewModel(pokeService: PokeService())
     var body: some View {
         NavigationStack {
             if viewModel.errorAppeared {
@@ -22,8 +22,6 @@ struct ContentView: View {
                         .font(.title)
                         .fontWeight(.bold)
                 }
-
-
             } else {
                 ZStack {
                     content
@@ -36,6 +34,7 @@ struct ContentView: View {
                 }
             }
         }
+        .accessibilityIdentifier("mainContent")
         .tint(.gray)
         .refreshable {
             viewModel.loadPokemons()
@@ -54,9 +53,10 @@ struct ContentView: View {
                 ScrollView() {
                     VStack(spacing: 14) {
                         ForEach (viewModel.pokemons, id: \.self.name) { pokemon in
-                            NavigationLink{
+                            NavigationLink {
                                 PokemonDetailsView(name: pokemon.name ?? "", image: pokemon.image, types: pokemon.types, weight: pokemon.weight ?? 0)
-                            } label: {
+                            }
+                            label: {
                                 HStack(alignment: .top, spacing: 0){
                                     Text(pokemon.name ?? "")
                                         .font(.title2)
@@ -64,13 +64,18 @@ struct ContentView: View {
                                         .foregroundStyle(.white)
                                         .padding(.top, 19)
                                     Spacer()
-                                    getPokeImage(image: pokemon.image)
+                                    getPokeImage(url: pokemon.image ?? "")
                                         .frame(width: 94, height: 94)
                                 }
                             }
+                            .accessibilityElement()
+                            .accessibilityAddTraits(.isButton)
+                            .accessibilityRespondsToUserInteraction()
+                            .accessibilityIdentifier("goToDetailPokemon \(pokemon.name ?? "")")
                             .padding()
                             .background(Color.cards)
                             .clipShape(RoundedRectangle(cornerRadius: 15))
+
                         }
                     }
                 }
@@ -129,10 +134,9 @@ struct ContentView: View {
     }
 
     @ViewBuilder
-    func getPokeImage(image: UIImage?) -> some View {
-        if let image = image {
-            Image(uiImage: image)
-                .resizable()
+    func getPokeImage(url: String) -> some View {
+        if let url = URL(string: url) {
+            CachedAsyncImage(url: url)
                 .scaledToFill()
         } else {
             ProgressView()

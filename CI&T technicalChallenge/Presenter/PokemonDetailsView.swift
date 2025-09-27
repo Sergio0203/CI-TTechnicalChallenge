@@ -3,7 +3,7 @@ import SwiftUI
 
 struct PokemonDetailsView: View {
     var name: String
-    var image: UIImage?
+    var image: String?
     var types: [PokeTypeName]
     var weight: Double
 
@@ -18,6 +18,9 @@ struct PokemonDetailsView: View {
             Text(name)
                 .font(.largeTitle)
                 .fontWeight(.bold)
+                .accessibilityIdentifier(name)
+
+
             HStack(spacing: 8){
                 ForEach(types, id: \.hashValue) { type in
                     Text(type.rawValue.capitalized)
@@ -51,10 +54,10 @@ struct PokemonDetailsView: View {
     @ViewBuilder
     var pokemonImage: some View {
         if let image {
-            Image(uiImage: image)
-                .resizable()
+            CachedAsyncImage(url: URL(string: image)!)
                 .aspectRatio(contentMode: .fill)
                 .scaledToFill()
+                .frame(width: 300, height: 300)
         }
         else {
             Image(systemName: "photo.fill")
@@ -63,10 +66,3 @@ struct PokemonDetailsView: View {
         }
     }
 }
-#if DEBUG
-#Preview {
-    NavigationStack {
-        PokemonDetailsView(name: "Bulbasaur", image: UIImage(systemName: "questionmark.folder.ar")!, types: [.dark, .dragon ], weight: 6.9)
-    }
-}
-#endif
