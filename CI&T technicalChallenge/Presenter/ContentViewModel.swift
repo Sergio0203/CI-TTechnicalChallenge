@@ -21,8 +21,13 @@ final class ContentViewModel {
     }
 
     @ObservationIgnored var pokemonTotals: PokeListResponseDTO?
-    @ObservationIgnored let pokeService: PokeService = PokeService()
+    @ObservationIgnored let pokeService: PokeServiceProtocol
     @ObservationIgnored private var loadPokemonsTask: Task<Void, Never>?
+
+    init(pokeService: PokeServiceProtocol = PokeService()) {
+        self.pokeService = pokeService
+    }
+
     func loadPokemons(offset: Int = 0) {
         loadPokemonsTask?.cancel()
         isLoadingPokemons = true
@@ -64,9 +69,9 @@ final class ContentViewModel {
     private func setPokemons() async {
         for (index, pokemon) in pokemons.enumerated() {
             guard let pokemonDetails = await getPokemonDetails(pokemon: pokemon) else { return }
-
+            let asyncPokemon = await PokemonModel(pokemonResponse: pokemonDetails)
             await MainActor.run {
-                pokemons[index] = .init(pokemonResponse: pokemonDetails)
+                pokemons[index] = asyncPokemon
             }
         }
     }

@@ -11,9 +11,9 @@ struct ContentView: View {
     @State var viewModel = ContentViewModel()
     var body: some View {
         NavigationStack {
-            VStack {
+            ZStack {
                 content
-
+                    .padding(.horizontal, 16)
             }
             .onAppear {
                 if viewModel.pokemonTotals == nil {
@@ -32,44 +32,93 @@ struct ContentView: View {
             ProgressView()
         }
         else {
-            List (viewModel.pokemons, id: \.self.name) { pokemon in
-                NavigationLink{
-                    PokemonDetailsView(name: pokemon.name ?? "", image: pokemon.image, types: pokemon.types, weight: pokemon.weight ?? 0)
-                } label: {
-                    HStack {
-                        getPokeImage(image: pokemon.image)
-                            .frame(width: 60, height: 60)
-                        Text(pokemon.name ?? "")
+            VStack(alignment: .leading, spacing: 46) {
+                header
+                ScrollView() {
+                    VStack(spacing: 14) {
+                        ForEach (viewModel.pokemons, id: \.self.name) { pokemon in
+                            NavigationLink{
+                                PokemonDetailsView(name: pokemon.name ?? "", image: pokemon.image, types: pokemon.types, weight: pokemon.weight ?? 0)
+                            } label: {
+                                HStack(alignment: .top, spacing: 0){
+                                    Text(pokemon.name ?? "")
+                                        .font(.title2)
+                                        .fontWeight(.bold)
+                                        .foregroundStyle(.white)
+                                        .padding(.top, 19)
+                                    Spacer()
+                                    getPokeImage(image: pokemon.image)
+                                        .frame(width: 94, height: 94)
+                                }
+                            }
+                            .padding()
+                            .background(Color.cards)
+                            .clipShape(RoundedRectangle(cornerRadius: 15))
+                        }
                     }
                 }
+                .padding(.horizontal, 11)
             }
+            pageControllers
+                .padding(.bottom, 24)
+        }
+    }
 
-
-            HStack {
+    @ViewBuilder
+    var pageControllers: some View {
+        VStack {
+            Spacer()
+            HStack(alignment: .bottom) {
                 if viewModel.canGoBackward {
                     Button(action: viewModel.pageBackward) {
-                        Image(systemName: "chevron.left")
+                        Circle()
+                            .fill(.pageController)
+                            .frame(width: 50, height: 50)
+                            .overlay {
+                                Image(systemName: "arrow.left")
+                            }
                     }
+                    .frame(width: 50, height: 50)
                 }
 
                 Spacer()
                 if viewModel.canGoForward {
                     Button(action: viewModel.pageForward) {
-                        Image(systemName: "chevron.right")
+                        Circle()
+                            .fill(.pageController)
+                            .frame(width: 50, height: 50)
+                            .overlay {
+                                Image(systemName: "arrow.right")
+                            }
                     }
                 }
             }
-            .padding(.horizontal, 16)
+            .foregroundStyle(.white)
         }
     }
+
+    @ViewBuilder
+    var header: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Text("Select your")
+                .font(.title)
+            HStack(spacing: 0) {
+                Text("Pokemon")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                Image(.pokeBalllmage)
+            }
+        }
+    }
+
     @ViewBuilder
     func getPokeImage(image: UIImage?) -> some View {
         if let image = image {
-             Image(uiImage: image)
+            Image(uiImage: image)
                 .resizable()
                 .scaledToFill()
         } else {
-             ProgressView()
+            ProgressView()
         }
     }
 }

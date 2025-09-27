@@ -5,7 +5,7 @@
 //  Created by Sérgio César Lira Júnior on 25/09/25.
 //
 
-struct PokeService {
+struct PokeService: PokeServiceProtocol {
     var client: ClientProtocol
     let pokeEndPoint = PokeAPIEndpoint.self
     init (client: ClientProtocol = URLSessionClient()) {

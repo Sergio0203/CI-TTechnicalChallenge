@@ -5,6 +5,7 @@
 //  Created by Sérgio César Lira Júnior on 25/09/25.
 //
 
+import SwiftUI
 enum PokeTypeName: String, Codable{
     case bug = "bug"
     case normal = "normal"

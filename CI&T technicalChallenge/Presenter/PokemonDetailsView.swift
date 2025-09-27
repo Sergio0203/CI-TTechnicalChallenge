@@ -5,7 +5,7 @@ struct PokemonDetailsView: View {
     var name: String
     var image: UIImage?
     var types: [PokeTypeName]
-    var weight: Int
+    var weight: Double
 
     var body: some View {
         VStack {
@@ -18,7 +18,7 @@ struct PokemonDetailsView: View {
             ForEach(types, id: \.hashValue) { type in
                 Text(type.rawValue)
             }
-            Text("Weight: \(weight) kg")
+            Text(String(format: "Weight: %.2f kg", weight))
         }
         .navigationBarTitleDisplayMode(.large)
         .navigationTitle(name)

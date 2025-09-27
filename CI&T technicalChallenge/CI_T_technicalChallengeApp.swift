@@ -12,6 +12,7 @@ struct CI_T_technicalChallengeApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .preferredColorScheme(.dark)
         }
     }
 }

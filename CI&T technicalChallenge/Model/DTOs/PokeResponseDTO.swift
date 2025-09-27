@@ -10,8 +10,8 @@ struct PokeResponseDTO: Decodable {
     var name: String
     var sprites: Sprites
     var types: [PokeTypes]
-    var weight: Int
-    
+    var weight: Double
+
 }
 
 struct PokeTypes: Codable {
