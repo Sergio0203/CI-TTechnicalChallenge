@@ -59,7 +59,7 @@ final class CI_T_technicalChallengeTests: XCTestCase {
         mockPokeService.pokemonListResult = .success(fakePokemonList)
         mockPokeService.pokemonDetailResult = .failure(MockError.networkError)
 
-        let expectation = XCTestExpectation(description: "Aguardando a falha do carregamento")
+        let expectation = XCTestExpectation(description: "waiting for failure")
 
         let expectationPokemonList: [PokemonModel] = [.init(pokeResult: fakePokemonList.results.first!)]
         let expectationErrorAppeared: Bool = true
@@ -81,7 +81,7 @@ final class CI_T_technicalChallengeTests: XCTestCase {
 
         mockPokeService.pokemonListResult = .failure(MockError.networkError)
 
-        let expectation = XCTestExpectation(description: "Aguardando a falha do carregamento")
+        let expectation = XCTestExpectation(description: "waiting for failure")
 
         let expectationPokemonList: [PokemonModel] = []
         let expectationErrorAppeared: Bool = true
@@ -106,7 +106,7 @@ final class CI_T_technicalChallengeTests: XCTestCase {
         mockPokeService.pokemonListResult = .failure(MockError.cancelled)
         mockPokeService.pokemonDetailResult = .success(fakePokemonDetail)
 
-        let expectation = XCTestExpectation(description: "Aguardando a falha do carregamento")
+        let expectation = XCTestExpectation(description: "waiting for failure")
         let expectedResponse: [PokemonModel] = []
         let expectationErrorAppeared: Bool = false
 
@@ -133,7 +133,7 @@ final class CI_T_technicalChallengeTests: XCTestCase {
         mockPokeService.pokemonListResult = .success(fakePokemonList)
         mockPokeService.pokemonDetailResult = .failure(MockError.cancelled)
 
-        let expectation = XCTestExpectation(description: "Aguardando a falha do carregamento")
+        let expectation = XCTestExpectation(description: "waiting for failure")
         let expectedResponse: [PokemonModel] = []
         let expectationErrorAppeared: Bool = false
 
