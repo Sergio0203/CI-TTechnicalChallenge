@@ -11,7 +11,7 @@ import SwiftUI
 final class ContentViewModel {
     var pokemons: [PokemonModel] = []
     var isLoadingPokemons: Bool = false
-
+    var errorAppeared: Bool = false
     var canGoForward: Bool {
         pokemonTotals?.next != nil
     }
@@ -31,7 +31,8 @@ final class ContentViewModel {
     func loadPokemons(offset: Int = 0) {
         loadPokemonsTask?.cancel()
         isLoadingPokemons = true
-
+        errorAppeared = false
+        
         loadPokemonsTask = Task {
             let auxPokemon = await fetchPokemons(from: offset)
 
@@ -51,17 +52,15 @@ final class ContentViewModel {
 
             guard let results = pokemonTotals?.results else { return  []}
             results.forEach { pokeResult in
-                print(pokeResult.name)
                 auxPokemon.append(PokemonModel(pokeResult: pokeResult))
             }
 
             return auxPokemon
 
-        } catch let error as NetworkError {
-            print(error)
+        } catch is NetworkError{
+            await setErrorAppearedtoTrue()
             return []
-        } catch let error {
-            print(error)
+        } catch {
             return []
         }
     }
@@ -94,12 +93,17 @@ final class ContentViewModel {
             guard let pokemonName = pokemon.name else {return nil}
             let pokemonResponse = try await pokeService.getPokemon(name: pokemonName)
             return pokemonResponse
-        } catch let networkError as NetworkError {
-            print(networkError.localizedDescription)
+        } catch is NetworkError {
+            await setErrorAppearedtoTrue()
             return nil
-        } catch let error {
-            print(error.localizedDescription)
-            return  nil
+        } catch {
+            return nil
+        }
+    }
+
+    private func setErrorAppearedtoTrue() async {
+        await MainActor.run {
+            errorAppeared = true
         }
     }
 }

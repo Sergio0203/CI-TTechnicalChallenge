@@ -11,20 +11,37 @@ struct ContentView: View {
     @State var viewModel = ContentViewModel()
     var body: some View {
         NavigationStack {
-            ZStack {
-                content
-                    .padding(.horizontal, 16)
-            }
-            .onAppear {
-                if viewModel.pokemonTotals == nil {
-                    viewModel.loadPokemons()
+            if viewModel.errorAppeared {
+                ZStack {
+                    ScrollView {}.refreshable {
+                        viewModel.loadPokemons()
+                    }
+                    Text("Oops! Something went wrong! Please pull to refresh!")
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 10)
+                        .font(.title)
+                        .fontWeight(.bold)
+                }
+
+
+            } else {
+                ZStack {
+                    content
+                        .padding(.horizontal, 16)
+                }
+                .onAppear {
+                    if viewModel.pokemonTotals == nil {
+                        viewModel.loadPokemons()
+                    }
                 }
             }
-            .refreshable {
-                viewModel.loadPokemons()
-            }
+        }
+        .tint(.gray)
+        .refreshable {
+            viewModel.loadPokemons()
         }
     }
+
 
     @ViewBuilder
     var content: some View {
